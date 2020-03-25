@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Layout, Menu,Input,Button ,Card,Table } from 'antd';
 import 'antd/dist/antd.css';
 import {compile,range} from 'mathjs';
+import axios from"axios";
 var Algebrite = require('algebrite')
 const {Content} = Layout;
 const InputStyle = {
@@ -39,16 +40,16 @@ class Trapzoidal extends Component {
     exactIntegrate(a, b) {
         var expr = compile(Algebrite.integral(Algebrite.eval(this.state.fx)).toString())
         return expr.eval({x:b}) - expr.eval({x:a})
-
     }
-    summationFunction(n, h) {
-        var sum = 0
-        var counter = h
-        for (var i=1 ; i<n ; i++) {
-            sum += this.func(counter)
-            counter += h
-        }
-        return sum
+    data = async () => {
+        var response = await axios.get('http://localhost:3001/api/users/showtrap').then(res => { return res.data })
+        this.setState({
+            fx: response['data'][0]['fx'],
+            lower: response['data'][0]['lower'],
+            upper: response['data'][0]['upper'],
+            showapi: true
+        });
+        this.trapzoidal(this.state.lower,this.state.upper)
     }
     func(X) {
         var expr = compile(this.state.fx);
@@ -76,7 +77,11 @@ class Trapzoidal extends Component {
                         <Button id="submit_button" onClick= {
                                 ()=>this.trapzoidal(parseInt(this.state.a), parseInt(this.state.b), parseInt(this.state.n))
                             }  
-                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit <br></br></Button><br></br>&nbsp;
+                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit <br></br></Button>&nbsp;
+                        <Button id="submit_button" onClick= {
+                                ()=>this.data()
+                            }  
+                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Example<br></br></Button><br></br>&nbsp;&nbsp;
                     </Content>
                     {this.state.showOutputCard && 
                         <Card

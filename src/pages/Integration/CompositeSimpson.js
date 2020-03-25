@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Layout, Menu,Input,Button ,Card,Table } from 'antd';
 import 'antd/dist/antd.css';
 import {compile,range} from 'mathjs';
+import axios from 'axios';
 var Algebrite = require('algebrite')
 const {Content} = Layout;
 const InputStyle = {
@@ -28,7 +29,7 @@ class Composite_Trapzoidal extends Component {
             [event.target.name]: event.target.value
         });
     }
-    composite_trapzoidal(a, b, n) {
+    compositesimp(a, b, n) {
         var h = (b-a)/n
         I = (h / 3) * (this.func(a) + this.func(b) + 4*this.summationFunction(b,a+h)+ 2*this.summationFunction(b,a+2*h))
         exact = this.exactIntegrate(a, b)
@@ -49,6 +50,17 @@ class Composite_Trapzoidal extends Component {
             sum += this.func(i)
         }
         return sum
+    }
+    data = async () => {
+        var response = await axios.get('http://localhost:3001/api/users/showcomsimp').then(res => { return res.data })
+        this.setState({
+            fx: response['data'][0]['fx'],
+            lower: response['data'][0]['lower'],
+            upper: response['data'][0]['upper'],
+            n:response['data'][0]['n'],
+            showapi: true
+        });
+        this.compositesimp(this.state.lower,this.state.upper,this.state.n)
     }
     func(X) {
         var expr = compile(this.state.fx);
@@ -75,9 +87,13 @@ class Composite_Trapzoidal extends Component {
                         <h2>Upper bound (B)</h2><Input size="large" name="b" style={InputStyle}></Input>
                         <h2>N</h2><Input size="large" name="n" style={InputStyle}></Input><br/><br/>
                         <Button id="submit_button" onClick= {
-                                ()=>this.composite_trapzoidal(parseInt(this.state.a), parseInt(this.state.b), parseInt(this.state.n))
+                                ()=>this.compositesimp(parseInt(this.state.a), parseInt(this.state.b), parseInt(this.state.n))
                             }  
-                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit</Button><br></br>&nbsp;
+                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit</Button>&nbsp;
+                        <Button id="submit_button" onClick= {
+                                ()=>this.data()
+                            }  
+                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Example<br></br></Button><br></br>&nbsp;&nbsp;
                     </Content>
 
                     {this.state.showOutputCard && 

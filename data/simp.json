@@ -1,0 +1,1 @@
+{"_id":{"$oid":"5e7b238948491c5b300adef1"},"fx":"sqrt(x)","lower":{"$numberInt":"0"},"upper":{"$numberInt":"8"},"__v":{"$numberInt":"0"}}

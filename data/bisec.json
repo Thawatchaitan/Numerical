@@ -1,0 +1,2 @@
+{"_id":{"$oid":"5e79dfcd9dd2049710fddd9a"},"fx":"x/2","xl":{"$numberInt":"2"},"xr":{"$numberInt":"3"},"__v":{"$numberInt":"0"}}
+{"_id":{"$oid":"5e7a302d2935b9a6005998ae"},"fx":"(x^4)-13","xl":{"$numberInt":"2"},"xr":{"$numberDouble":"1.5"},"__v":{"$numberInt":"0"}}
