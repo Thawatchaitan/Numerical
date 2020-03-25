@@ -1,8 +1,8 @@
 import React, { Component} from 'react'
 import 'antd/dist/antd.css';
 import axios from 'axios';
-import { Layout,Icon,Input,Button ,Card,Table } from 'antd';
-import {compile,range} from 'mathjs';
+import { Layout,Input,Button ,Card,Table } from 'antd';
+import {compile} from 'mathjs';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis,Tooltip,Legend } from 'recharts';
 const {Content} = Layout;
 
@@ -164,11 +164,11 @@ class Bisec extends Component{
                         <Button id="submit_button" onClick= {
                                 ()=>this.bisection(parseFloat(this.state.xl), parseFloat(this.state.xr))
                             }  
-                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit <br></br></Button>
+                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit <br></br></Button>&nbsp;&nbsp;
                         <Button id="submit_button" onClick= {
                                 ()=>this.data()
                             }  
-                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit <br></br></Button>
+                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Example <br></br></Button>
                     </Content>
                     <br/><br/>
                     {this.state.showGraph &&

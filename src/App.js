@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import 'antd/dist/antd.css';
-import { Layout, Menu, Breadcrumb, Icon } from 'antd';
+import { Layout, Menu, Icon } from 'antd';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 ///Root of Equation
 import Bisection from './pages/Root of Equation/Bisection'
@@ -23,6 +23,8 @@ import CompositeSimpson from './pages/Integration/CompositeSimpson';
 
 ///Difference
 import Forward from './pages/Different/Forward';
+import Backward from './pages/Different/Backward';
+import Central from './pages/Different/Central';
 
 const { SubMenu } = Menu;
 const { Header, Content, Footer, Sider } = Layout;
@@ -103,6 +105,8 @@ class App extends Component {
                 }
               >
                 <Menu.Item key="D1">Forward<Link to="/forward"/></Menu.Item>
+                <Menu.Item key="D2">Backrward<Link to="/backward"/></Menu.Item>
+                <Menu.Item key="D3">Central<Link to="/central"/></Menu.Item>
               </SubMenu>
             </Menu>
           </Sider>
@@ -125,6 +129,8 @@ class App extends Component {
 
             {/* Different */}
             <Route path="/forward" component={Forward}/>
+            <Route path="/backward" component={Backward}/>
+            <Route path="/central" component={Central}/>
           </Content>
         </Layout>
       </Content>

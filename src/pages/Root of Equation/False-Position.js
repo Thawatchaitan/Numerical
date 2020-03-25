@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import { Layout,Input,Button ,Card,Table } from 'antd';
 import {compile} from 'mathjs';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis,Tooltip,Legend } from 'recharts';
-
+import axios from "axios";
 const {Content} = Layout;
 const InputStyle = {
     background: "white",
@@ -124,6 +124,16 @@ class False extends Component{
             });
         }
     }
+    data = async () => {
+        var response = await axios.get('http://localhost:3001/api/users/showfalse').then(res => { return res.data })
+        this.setState({
+            fx: response['data'][0]['fx'],
+            xl: response['data'][0]['xl'],
+            xr: response['data'][0]['xr'],
+            showapi: true
+        });
+        this.falseposition(this.state.xl,this.state.xr)
+    }
     handleChange(event) {
         this.setState({
             [event.target.name]: event.target.value
@@ -152,7 +162,11 @@ class False extends Component{
                         <Button id="submit_button" onClick= {
                                 ()=>this.falseposition(parseFloat(this.state.xl), parseFloat(this.state.xr))
                             }  
-                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit</Button>
+                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit</Button>&nbsp;&nbsp;
+                        <Button id="submit_button" onClick= {
+                                ()=>this.data()
+                            }  
+                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Example <br></br></Button>
                     </Content>
                     <br/><br/>
                     {this.state.showGraph &&

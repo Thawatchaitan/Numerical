@@ -3,7 +3,7 @@ import { Layout,Input,Button ,Card,Table } from 'antd';
 import 'antd/dist/antd.css';
 import {compile} from 'mathjs';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis,Tooltip,Legend } from 'recharts';
-
+import axios from "axios";
 const {Content} = Layout;
 const InputStyle = {
     background: "white",
@@ -88,6 +88,15 @@ class Onepoint extends Component{
             });
         }
     }
+    data = async () => {
+        var response = await axios.get('http://localhost:3001/api/users/showone').then(res => { return res.data })
+        this.setState({
+            fx: response['data'][0]['fx'],
+            x: response['data'][0]['x'],
+            showapi: true
+        });
+        this.onepoint(this.state.x)
+    }
     handleChange(event) {
         this.setState({
             [event.target.name]: event.target.value
@@ -114,7 +123,11 @@ class Onepoint extends Component{
                         <Button id="submit_button" onClick= {
                                 ()=>this.onepoint(parseFloat(this.state.x0))
                             }  
-                    style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit <br></br></Button>
+                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit <br></br></Button>&nbsp;&nbsp;
+                        <Button id="submit_button" onClick= {
+                                ()=>this.data()
+                            }  
+                        style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Example <br></br></Button>
                     </Content>
 
                     <br/><br/>

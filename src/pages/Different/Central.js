@@ -31,16 +31,16 @@ class Forwardh extends Component {
     forward1(x, h, degree) {
         switch (degree) {
             case 1:
-                f = (this.func(x+(1*h)) - this.func(x)) / h
+                f = (this.func(x+(1*h)) - this.func(x-(1*h))) / (2*h)
                 break;
             case 2:
-                f = (this.func(x+(2*h)) - 2*this.func(x+(1*h)) + this.func(x)) / Math.pow(h, 2)
+                f = (this.func(x+(1*h)) - 2*this.func(x) + this.func(x-(1*h))) / Math.pow(h, 2)
                 break;
             case 3:
-                f = (this.func(x+(3*h)) - 3*this.func(x+(2*h)) + 3*this.func(x+(1*h)) - this.func(x)) / Math.pow(h, 3)
+                f = (this.func(x+(2*h)) - 2*this.func(x+(1*h)) + 2*this.func(x-(1*h)) - this.func(x-(2*h))) / (2*Math.pow(h, 3))
                 break;
             default:
-                f = (this.func(x+(4*h)) - 4*this.func(x+(3*h)) + 6*this.func(x+(2*h)) - 4*this.func(x+(1*h)) + this.func(x)) / Math.pow(h, 4) 
+                f = (this.func(x+(2*h)) - 4*this.func(x+(1*h)) + 6*this.func(x) - 4*this.func(x-(1*h)) + this.func(x-(2*h))) / Math.pow(h, 4) 
         }
         exact = this.funcDiff(x, degree)
         error = Math.abs((f - exact) / f)*100
@@ -67,7 +67,7 @@ class Forwardh extends Component {
     render() {
         return(
             <div style={{padding: "30px" }}>
-                <h2 style={{color: "black", fontWeight: "bold"}}>Forward Divided-Differences O(h)</h2>
+                <h2 style={{color: "black", fontWeight: "bold"}}>Central Divided-Differences O(h)</h2>
                 <div style={{float:"left"}}>
                 <Content 
                     onChange={this.handleChange}
