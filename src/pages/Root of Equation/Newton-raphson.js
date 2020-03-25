@@ -1,0 +1,157 @@
+import React, { Component } from 'react'
+import { Layout,Input,Button ,Card,Table } from 'antd';
+import 'antd/dist/antd.css';
+import {compile,range,derivative} from 'mathjs';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis,Tooltip,Legend } from 'recharts';
+
+const {Content} = Layout;
+const InputStyle = {
+    background: "white",
+    color: "black", 
+    fontWeight: "bold", 
+    fontSize: "24px"
+
+};
+var dataInTable;
+const columns = [
+    {
+      title: "Iteration",
+      dataIndex: "iteration",
+      key: "iteration"
+    },
+    {
+        title: "X",
+        dataIndex: "x",
+        key: "x"
+    },
+    {
+      title: "Error",
+      key: "error",
+      dataIndex: "error"
+    }
+];
+  const xValues = range(-10, 10, 0.5).toArray();
+  var fx = " ";
+class Newton extends Component {
+    
+    constructor() {
+        super();
+        this.state = {
+            fx: "",
+            x0: 0,
+            showOutputCard: false,
+            showGraph: false
+        }
+        this.handleChange = this.handleChange.bind(this);
+        this.newton_raphson = this.newton_raphson.bind(this);
+    }
+
+    newton_raphson(xold) {
+        fx = this.state.fx;
+        var xnew = 0;
+        var epsilon= parseFloat(0.000000);
+        var n=0;
+        var data  = []
+        data['x'] = []
+        data['error'] = []
+        do{ 
+            xnew = xold - (this.func(xold)/this.funcDiff(xold));
+            epsilon = this.error(xnew, xold)
+            data['x'][n] =  xnew.toFixed(8);
+            data['error'][n] = Math.abs(epsilon).toFixed(8);
+            n++;  
+            xold = xnew;
+        }while(Math.abs(epsilon)>0.000001);
+
+        this.createTable(data['x'], data['error']);
+        this.setState({
+            showOutputCard: true,
+            showGraph: true
+        })
+
+        
+    }
+    func(X) {
+        var expr = compile(this.state.fx);
+        let scope = {x:parseFloat(X)};
+        return expr.eval(scope);        
+    }
+    funcDiff(X) {
+        var expr = derivative(this.state.fx, 'x');
+        let scope = {x:parseFloat(X)};
+        return expr.eval(scope); 
+    }
+    error(xnew, xold) {
+        return Math.abs((xnew-xold) / xnew);
+    }
+    createTable(x, error) {
+        dataInTable = []
+        for (var i=0 ; i<x.length ; i++) {
+            dataInTable.push({
+                iteration: i+1,
+                x: x[i],
+                error: error[i]
+            });
+        }
+    
+    }
+    handleChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value
+        });
+    }
+    render() {
+        return(
+            <div style={{ background: "#FFFF", padding: "30px" }}>
+                <h2 style={{color: "black", fontWeight: "bold"}}>Newton Raphson</h2>
+                <div>
+                <Content 
+                    onChange={this.handleChange}
+                    style={{ padding: '0 50px',
+                    background: "#D2B48C",
+                    width:'100%%',
+                    borderRadius:"15px"
+                }}
+                >
+                    <Content
+                        style={{background: "#D2B48C", borderRadius:"50px" , width:500}}
+                    >
+                        <h2>f(x)</h2><Input size="large" name="fx" style={InputStyle}></Input>
+                        <h2>X<sub>0</sub></h2><Input size="large" name="x0" style={InputStyle}></Input><br/><br/>
+                        <Button id="submit_button" onClick= {
+                                ()=>this.newton_raphson(parseFloat(this.state.x0))
+                            }  
+                    style={{background: "#4caf50", color: "white", fontSize: "20px"}}>Submit</Button>
+                    </Content>
+
+                    <br/><br/>
+                    {this.state.showGraph &&
+                        
+                        <div className={"my-pretty-chart-container"}>
+                            <Card bordered={true}
+                                style={{borderRadius:"50px"}}
+                            >
+                            <LineChart width={730} height={250} data={dataInTable}
+                                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                    <XAxis dataKey="error" />
+                                    <YAxis />
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <Tooltip />
+                                    <Legend verticalAlign="top" height={36} />
+                                    <Line name="error" type="monotone" dataKey="error" stroke="#8884d8" />
+                                </LineChart>
+                            </Card>
+                        </div>
+                }
+                    
+                    {this.state.showOutputCard &&
+                            <Table columns={columns} dataSource={dataInTable}  bodyStyle={{fontWeight: "bold", fontSize: "18px", color: "black"}}
+                            ></Table>   
+                    } 
+                </Content>
+                </div>
+            </div>
+        );
+    }
+}
+export default Newton;
